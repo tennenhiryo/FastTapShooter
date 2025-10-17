@@ -73,3 +73,17 @@ body {
   font-size: 24px;
   display: none;
 }
+
+#gameOver {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Game Over 内の要素間の余白 */
+  text-align: center;
+}

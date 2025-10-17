@@ -76,7 +76,7 @@ function startGame() {
 }
 
 function beginGameplay() {
-  maxTime = 6 - Math.min(score * 0.01, 4); // 初期猶予調整可
+  maxTime = 6; // 再スタート時も初期猶予をリセット
   timeLeft = maxTime;
   spawnTarget();
   gameInterval = setInterval(updateTime, 50);
@@ -85,7 +85,7 @@ function beginGameplay() {
 function endGame() {
   clearInterval(gameInterval);
   target.style.display = 'none';
-  gameOverEl.style.display = 'block';
+  gameOverEl.style.display = 'flex';
   finalScore.textContent = `スコア: ${score}`;
   if (score > highScore) {
     highScore = score;
