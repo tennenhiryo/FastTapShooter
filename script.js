@@ -1,98 +1,108 @@
-const startBtn = document.getElementById('startBtn');
-const countdownEl = document.getElementById('countdown');
 const target = document.getElementById('target');
+const startButton = document.getElementById('startButton');
+const countdownEl = document.getElementById('countdown');
 const gameOverEl = document.getElementById('gameOver');
-const finalScoreEl = document.getElementById('finalScore');
-const restartBtn = document.getElementById('restartBtn');
+const restartButton = document.getElementById('restartButton');
+const finalScore = document.getElementById('finalScore');
 const scoreEl = document.getElementById('score');
 const highScoreEl = document.getElementById('highScore');
 const timeBar = document.getElementById('timeBar');
-const gameArea = document.getElementById('gameArea');
 
 let score = 0;
 let highScore = 0;
-let timeLeft;
-const maxTime = 6; // 初期猶予時間
-const minTime = 1;
-const timeDecay = 0.02; // 減少率
+let timeLeft = 6; // 初期猶予時間
+let maxTime = 6;
 let gameInterval;
-let targetInterval;
+const decayRate = 0.05; // 基本減少速度
+const speedUp = 0.002;  // スコアによる加速
 
-function startGame() {
-  score = 0;
-  scoreEl.textContent = `スコア: ${score}`;
-  timeLeft = maxTime;
-  startBtn.style.display = 'none';
-  gameOverEl.style.display = 'none';
-  countdownEl.textContent = '';
-  target.style.display = 'none';
-  runCountdown();
+function randomPosition() {
+  const area = document.getElementById('gameArea');
+  const maxX = area.clientWidth - target.clientWidth;
+  const maxY = area.clientHeight - target.clientHeight;
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+  target.style.left = `${x}px`;
+  target.style.top = `${y}px`;
 }
 
-function runCountdown() {
-  let count = 3;
-  countdownEl.textContent = count;
-  const cdInterval = setInterval(() => {
-    count--;
-    if (count > 0) {
-      countdownEl.textContent = count;
-    } else {
-      clearInterval(cdInterval);
-      countdownEl.textContent = 'START!';
-      setTimeout(() => {
-        countdownEl.textContent = '';
-        beginGameplay();
-      }, 500);
-    }
-  }, 1000);
+function spawnTarget() {
+  randomPosition();
+  target.style.display = 'block';
 }
 
-function beginGameplay() {
-  spawnTarget();
-  gameInterval = setInterval(updateTime, 50);
+function updateTimeBar() {
+  const percent = (timeLeft / maxTime) * 100;
+  timeBar.style.width = percent + '%';
 }
 
 function updateTime() {
-  // ゲージは常にフル幅
-  const decayRate = (maxTime / Math.max(timeLeft, 0.01)) * 0.05; 
-  timeLeft -= decayRate;
+  timeLeft -= decayRate + score * speedUp;
   if (timeLeft <= 0) {
+    timeLeft = 0;
     endGame();
   }
   updateTimeBar();
 }
 
-function updateTimeBar() {
-  // 常にフル幅のゲージ表示
-  timeBar.style.width = '100%';
+function startCountdown(callback) {
+  let count = 3;
+  countdownEl.style.display = 'block';
+  countdownEl.textContent = count;
+  const interval = setInterval(() => {
+    count--;
+    if (count > 0) {
+      countdownEl.textContent = count;
+    } else {
+      countdownEl.textContent = 'スタート！';
+    }
+    if (count < 0) {
+      clearInterval(interval);
+      countdownEl.style.display = 'none';
+      callback();
+    }
+  }, 1000);
 }
 
-function spawnTarget() {
-  const areaSize = gameArea.clientWidth;
-  const btnSize = 60;
-  target.style.left = `${Math.random() * (areaSize - btnSize)}px`;
-  target.style.top = `${Math.random() * (areaSize - btnSize)}px`;
-  target.style.display = 'block';
-}
-
-target.addEventListener('click', () => {
-  score++;
+function startGame() {
+  score = 0;
   scoreEl.textContent = `スコア: ${score}`;
-  if(score > highScore){
-    highScore = score;
-    highScoreEl.textContent = `ハイスコア: ${highScore}`;
-  }
-  timeLeft = Math.max(maxTime - score * timeDecay, minTime);
-  updateTimeBar();
+  timeLeft = maxTime;
+  clearInterval(gameInterval);
+  target.style.display = 'none';
+  gameOverEl.style.display = 'none';
+  startButton.style.display = 'none';
+  startCountdown(beginGameplay);
+}
+
+function beginGameplay() {
+  maxTime = 6 - Math.min(score * 0.01, 4); // 初期猶予調整可
+  timeLeft = maxTime;
   spawnTarget();
-});
+  gameInterval = setInterval(updateTime, 50);
+}
 
 function endGame() {
   clearInterval(gameInterval);
   target.style.display = 'none';
   gameOverEl.style.display = 'block';
-  finalScoreEl.textContent = `Score: ${score}`;
+  finalScore.textContent = `スコア: ${score}`;
+  if (score > highScore) {
+    highScore = score;
+    highScoreEl.textContent = `ハイスコア: ${highScore}`;
+  }
 }
 
-restartBtn.addEventListener('click', startGame);
-startBtn.addEventListener('click', startGame);
+target.addEventListener('click', () => {
+  score++;
+  scoreEl.textContent = `スコア: ${score}`;
+  maxTime = 6 - Math.min(score * 0.01, 4);
+  timeLeft = maxTime; // タップで猶予回復
+  spawnTarget();
+});
+
+startButton.addEventListener('click', startGame);
+restartButton.addEventListener('click', () => {
+  gameOverEl.style.display = 'none';
+  startGame();
+});
