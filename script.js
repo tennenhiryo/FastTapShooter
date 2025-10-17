@@ -1,4 +1,3 @@
-// 要素取得
 const menuScreen = document.getElementById('menu-screen');
 const startBtn = document.getElementById('start-btn');
 const countdownEl = document.getElementById('countdown');
@@ -19,17 +18,15 @@ let decrease = 80;
 let timeout;
 let gaugeInterval;
 
-// ハイスコア取得
 let highScore = localStorage.getItem('FastTapShooterHigh') || 0;
 highscoreText.textContent = "HIGH SCORE: " + highScore;
 
-// スタートボタン
 startBtn.addEventListener('click', () => {
   menuScreen.classList.add('hidden');
   countdownEl.classList.remove('hidden');
-  window.scrollTo(0,0);
   let count = 3;
   countdownEl.textContent = count;
+  window.scrollTo(0,0);
   const cd = setInterval(() => {
     count--;
     if(count > 0){
@@ -57,7 +54,7 @@ function startGame(){
 
 function moveButton(){
   const maxX = gameScreen.clientWidth - targetBtn.offsetWidth;
-  const maxY = 400 - targetBtn.offsetHeight;
+  const maxY = gameScreen.clientHeight - targetBtn.offsetHeight - 20;
   const x = Math.random() * maxX;
   const y = Math.random() * maxY;
   targetBtn.style.left = x + "px";
@@ -100,7 +97,6 @@ function endGame(){
   window.scrollTo(0,0);
 }
 
-// 再挑戦ボタン
 retryBtn.addEventListener('click',()=>{
   gameOverScreen.classList.add('hidden');
   menuScreen.classList.remove('hidden');
