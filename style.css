@@ -1,93 +1,94 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
+  margin: 0;
   font-family: sans-serif;
-  background: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding-top: 20px;
-}
-
-#game-container {
-  width: 95vw;
-  max-width: 500px;
   text-align: center;
+  background: #ffffff;
 }
 
-#score-container {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 1.1rem;
+#title {
+  font-size: 2rem;
+  margin-top: 1rem;
 }
 
-#time-bar-container {
-  width: 100%;
+#scoreBoard {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+#timeBarContainer {
+  width: 90%;
   height: 20px;
   background: #ddd;
+  margin: 0.5rem auto;
   border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 10px;
 }
 
-#time-bar {
+#timeBar {
   height: 100%;
   width: 100%;
-  background: linear-gradient(to right, #4caf50, #8bc34a);
-}
-
-#game-area {
-  position: relative;
-  width: 100%;
-  padding-top: 100%; /* 正方形 */
-  background: #f0f0f0;
-  border: 2px solid #333;
+  background: linear-gradient(90deg, #4caf50, #81c784);
   border-radius: 10px;
-  overflow: hidden;
 }
 
-#start-button, #retry-button {
+#gameArea {
+  position: relative;
+  width: 90%;
+  max-width: 500px;
+  margin: 1rem auto;
+  aspect-ratio: 1/1;
+  border: 2px solid #000;
+  background: #f0f0f0;
+}
+
+#startBtn, #target, #restartBtn {
   position: absolute;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.5rem 1rem;
+}
+
+#startBtn {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 15px 30px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  border: none;
-  border-radius: 10px;
-  background-color: #2196f3;
-  color: #fff;
 }
 
 #countdown {
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
-  transform: translate(-50%, -50%);
   font-size: 2rem;
-  font-weight: bold;
-  display: none;
+  transform: translate(-50%, -50%);
 }
 
-#game-over {
+#target {
+  display: none;
+  width: 60px;
+  height: 60px;
+  background: red;
+  border: none;
+  border-radius: 10px;
+}
+
+#gameOver {
+  display: none;
   position: absolute;
-  top: 50%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
-  display: none;
-  flex-direction: column;
-  align-items: center;
 }
 
-#game-over-text {
+#gameOverText {
   font-size: 2rem;
-  margin-bottom: 20px;
-  color: #f44336;
+  margin-bottom: 1rem;
+}
+
+#finalScore {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+#restartBtn {
+  writing-mode: horizontal-tb;
+  white-space: nowrap;
 }
