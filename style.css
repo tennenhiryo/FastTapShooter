@@ -1,109 +1,75 @@
-html, body {
-  height: 100%;
+* {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* スクロール禁止 */
-  font-family: 'Poppins', "Hiragino Kaku Gothic Pro", sans-serif;
-  background: #f8f9fa;
-  color: #222;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.header {
+  width: 100%;
+  padding: 10px;
   text-align: center;
 }
 
-/* 隠す */
-.hidden { display: none; }
-
-/* メニュー画面 */
-#menu-screen, #game-screen, #gameover-screen {
-  width: 100%;
-  height: 100vh;
+.scoreboard {
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
+  margin-top: 5px;
+}
+
+.time-bar-container {
+  width: 90%;
+  height: 15px;
+  background-color: #ddd;
+  margin: 10px auto 0 auto;
+  border-radius: 8px;
+}
+
+#time-bar {
+  height: 100%;
+  width: 100%;
+  background-color: #76c7c0;
+  border-radius: 8px;
+}
+
+#game-container {
+  position: relative;
+  width: 90%;
+  max-width: 500px;
+  aspect-ratio: 1 / 1; /* 正方形 */
+  margin: 20px auto;
+  border: 2px solid #333;
+  background-color: #fff;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* メニュー画面スタイル */
-#menu-screen h1 {
-  font-size: 2.8em;
-  margin-bottom: 40px;
-  color: #1abc9c;
-}
-
-#start-btn, #retry-btn {
-  padding: 18px 36px;
-  font-size: 1.5em;
-  border-radius: 50px;
-  border: none;
-  background: #1abc9c;
-  color: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+#start-button, #retry-button {
+  padding: 20px 40px;
+  font-size: 1.5rem;
   cursor: pointer;
-  transition: transform 0.1s;
 }
 
-#start-btn:active, #retry-btn:active { transform: scale(1.1); }
-
-/* カウントダウン */
 #countdown {
-  font-size: 5em;
-  color: #e74c3c;
   position: absolute;
-  top: 40%;
-  width: 100%;
-  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #333;
 }
 
-/* ゲーム画面 */
-#ui-top {
-  display: flex;
-  justify-content: space-between;
-  width: 90%;
-  font-size: 1.2em;
-  margin-bottom: 5px;
-}
-
-#time-gauge-container {
-  width: 80%;
-  height: 12px;
-  background: #ddd;
-  margin-bottom: 20px;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-#time-gauge {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #1abc9c, #16a085);
-  transition: width 0.02s linear;
-}
-
-#game-area {
-  position: relative;
-  flex: 1;
-  width: 100%;
-}
-
-#target-btn {
-  position: absolute;
-  width: 70px;
-  height: 70px;
-  background: linear-gradient(135deg, #3498db, #2980b9);
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.3);
-  transition: transform 0.1s, box-shadow 0.1s;
-}
-
-#target-btn:active {
-  transform: scale(1.2);
-  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-}
-
-/* ゲームオーバー */
-#gameover-screen h2 {
-  font-size: 2em;
-  color: #e74c3c;
-  margin-bottom: 20px;
+#game-over {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
 }

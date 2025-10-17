@@ -1,103 +1,107 @@
-const menuScreen = document.getElementById('menu-screen');
-const startBtn = document.getElementById('start-btn');
-const countdownEl = document.getElementById('countdown');
-const gameScreen = document.getElementById('game-screen');
-const gameOverScreen = document.getElementById('gameover-screen');
-const targetBtn = document.getElementById('target-btn');
-const scoreText = document.getElementById('score-text');
-const highscoreText = document.getElementById('highscore-text');
-const timeGauge = document.getElementById('time-gauge');
-const finalScore = document.getElementById('final-score');
-const finalHighscore = document.getElementById('final-highscore');
-const retryBtn = document.getElementById('retry-btn');
+const startButton = document.getElementById("start-button");
+const retryButton = document.getElementById("retry-button");
+const countdownEl = document.getElementById("countdown");
+const gameContainer = document.getElementById("game-container");
+const gameOverEl = document.getElementById("game-over");
+const scoreEl = document.getElementById("score");
+const highScoreEl = document.getElementById("highScore");
+const timeBar = document.getElementById("time-bar");
 
 let score = 0;
-let timeLimit = 3000;
-let minTime = 500;
-let decrease = 80;
-let timeout;
-let gaugeInterval;
+let highScore = 0;
+let timeLeft = 6; // 初期猶予6秒
+let gameInterval;
+let timeInterval;
 
-let highScore = localStorage.getItem('FastTapShooterHigh') || 0;
-highscoreText.textContent = "HIGH SCORE: " + highScore;
-
-startBtn.addEventListener('click', () => {
-  menuScreen.classList.add('hidden');
-  countdownEl.classList.remove('hidden');
+function startCountdown(callback) {
   let count = 3;
   countdownEl.textContent = count;
-  window.scrollTo(0,0);
-  const cd = setInterval(() => {
+  countdownEl.style.display = "block";
+  const cdInterval = setInterval(() => {
     count--;
-    if(count > 0){
+    if(count > 0) {
       countdownEl.textContent = count;
     } else {
-      clearInterval(cd);
-      countdownEl.textContent = "START!";
+      countdownEl.textContent = "Start!";
+      clearInterval(cdInterval);
       setTimeout(() => {
-        countdownEl.classList.add('hidden');
-        startGame();
-      }, 700);
+        countdownEl.style.display = "none";
+        callback();
+      }, 800);
     }
-  },1000);
-});
-
-function startGame(){
-  score = 0;
-  scoreText.textContent = score;
-  gameScreen.classList.remove('hidden');
-  window.scrollTo(0,0);
-  timeLimit = 3000;
-  moveButton();
-  startTimer();
+  }, 800);
 }
 
-function moveButton(){
-  const maxX = gameScreen.clientWidth - targetBtn.offsetWidth;
-  const maxY = gameScreen.clientHeight - targetBtn.offsetHeight - 20;
+function startGame() {
+  score = 0;
+  scoreEl.textContent = score;
+  timeLeft = 6;
+  updateTimeBar();
+
+  startButton.style.display = "none";
+  gameOverEl.style.display = "none";
+
+  spawnTarget();
+
+  timeInterval = setInterval(() => {
+    timeLeft -= 0.05; // 緩やかに減少
+    if(timeLeft <= 0) {
+      endGame();
+    }
+    updateTimeBar();
+  }, 50);
+}
+
+function spawnTarget() {
+  const target = document.createElement("div");
+  target.style.width = "50px";
+  target.style.height = "50px";
+  target.style.backgroundColor = "#ff5555";
+  target.style.borderRadius = "50%";
+  target.style.position = "absolute";
+
+  const containerRect = gameContainer.getBoundingClientRect();
+  const maxX = containerRect.width - 50;
+  const maxY = containerRect.height - 50;
+
   const x = Math.random() * maxX;
   const y = Math.random() * maxY;
-  targetBtn.style.left = x + "px";
-  targetBtn.style.top = y + "px";
+
+  target.style.left = x + "px";
+  target.style.top = y + "px";
+
+  target.addEventListener("click", () => {
+    score++;
+    scoreEl.textContent = score;
+    timeLeft = 6; // 猶予時間リセット
+    updateTimeBar();
+    target.remove();
+    spawnTarget();
+  });
+
+  gameContainer.appendChild(target);
 }
 
-function startTimer(){
-  clearTimeout(timeout);
-  clearInterval(gaugeInterval);
-  let startTime = Date.now();
-  gaugeInterval = setInterval(() => {
-    let elapsed = Date.now() - startTime;
-    let width = Math.max(0, (timeLimit - elapsed)/timeLimit) * 100;
-    timeGauge.style.width = width + "%";
-  },16);
-
-  timeout = setTimeout(() => {
-    endGame();
-  }, timeLimit);
+function updateTimeBar() {
+  timeBar.style.width = (timeLeft / 6 * 100) + "%";
 }
 
-targetBtn.addEventListener('click',()=>{
-  score++;
-  scoreText.textContent = score;
-  timeLimit = Math.max(minTime, timeLimit - decrease);
-  moveButton();
-  startTimer();
-  if(score > highScore){
+function endGame() {
+  clearInterval(timeInterval);
+  const targets = gameContainer.querySelectorAll("div");
+  targets.forEach(t => t.remove());
+  gameOverEl.style.display = "flex";
+  startButton.style.display = "none";
+  if(score > highScore) {
     highScore = score;
-    highscoreText.textContent = "HIGH SCORE: " + highScore;
-    localStorage.setItem('FastTapShooterHigh', highScore);
+    highScoreEl.textContent = highScore;
   }
+}
+
+startButton.addEventListener("click", () => {
+  startCountdown(startGame);
 });
 
-function endGame(){
-  gameScreen.classList.add('hidden');
-  gameOverScreen.classList.remove('hidden');
-  finalScore.textContent = "SCORE: " + score;
-  finalHighscore.textContent = "HIGH SCORE: " + highScore;
-  window.scrollTo(0,0);
-}
-
-retryBtn.addEventListener('click',()=>{
-  gameOverScreen.classList.add('hidden');
-  menuScreen.classList.remove('hidden');
+retryButton.addEventListener("click", () => {
+  startCountdown(startGame);
 });
