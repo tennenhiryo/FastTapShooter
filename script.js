@@ -85,7 +85,8 @@ function beginGameplay() {
 function endGame() {
   clearInterval(gameInterval);
   target.style.display = 'none';
-  gameOverEl.style.display = 'flex';
+  // ゲームオーバー時にFlexboxで表示させる
+  gameOverEl.style.display = 'flex'; 
   finalScore.textContent = `スコア: ${score}`;
   if (score > highScore) {
     highScore = score;
@@ -96,7 +97,8 @@ function endGame() {
 target.addEventListener('click', () => {
   score++;
   scoreEl.textContent = `スコア: ${score}`;
-  maxTime = 6 - Math.min(score * 0.01, 4);
+  // maxTimeの計算式はそのまま
+  maxTime = 6 - Math.min(score * 0.01, 4); 
   timeLeft = maxTime; // タップで猶予回復
   spawnTarget();
 });
